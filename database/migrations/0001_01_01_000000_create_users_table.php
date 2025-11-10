@@ -15,10 +15,18 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->string('email')->unique();
+            $table->string('phone')->nullable();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
+            $table->enum('role', ['root', 'restaurant_admin', 'customer'])->default('customer');
+            $table->boolean('is_guest')->default(false);
+            $table->timestamp('guest_converted_at')->nullable();
             $table->rememberToken();
             $table->timestamps();
+
+            // Índices para otimização de queries
+            $table->index('email');
+            $table->index('role');
         });
 
         Schema::create('password_reset_tokens', function (Blueprint $table) {
