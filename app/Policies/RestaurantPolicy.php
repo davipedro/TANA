@@ -12,7 +12,7 @@ class RestaurantPolicy
      */
     public function viewAny(?User $user): bool
     {
-        return true; // Todos podem ver lista de restaurantes
+        return true;
     }
 
     /**
@@ -20,7 +20,7 @@ class RestaurantPolicy
      */
     public function view(?User $user, Restaurant $restaurant): bool
     {
-        return true; // Todos podem ver detalhes
+        return true;
     }
 
     /**
@@ -28,7 +28,7 @@ class RestaurantPolicy
      */
     public function create(User $user): bool
     {
-        return $user->isRoot(); // Apenas root pode criar novos restaurantes
+        return $user->isRoot();
     }
 
     /**
@@ -36,7 +36,7 @@ class RestaurantPolicy
      */
     public function update(User $user, Restaurant $restaurant): bool
     {
-        return $user->canManageRestaurant($restaurant);
+        return $user->isRestaurantAdmin() && $user->canManageRestaurant($restaurant);
     }
 
     /**
@@ -44,7 +44,7 @@ class RestaurantPolicy
      */
     public function delete(User $user, Restaurant $restaurant): bool
     {
-        return $user->isRoot(); // Apenas root pode deletar restaurantes
+        return $user->isRoot();
     }
 
     /**

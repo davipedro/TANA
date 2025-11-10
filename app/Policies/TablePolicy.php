@@ -12,7 +12,7 @@ class TablePolicy
      */
     public function viewAny(?User $user): bool
     {
-        return true; // Todos podem ver mesas
+        return true;
     }
 
     /**
@@ -28,7 +28,7 @@ class TablePolicy
      */
     public function create(User $user): bool
     {
-        return $user->isRoot() || $user->isRestaurantAdmin();
+        return $user->isRestaurantAdmin();
     }
 
     /**
@@ -36,7 +36,7 @@ class TablePolicy
      */
     public function update(User $user, Table $table): bool
     {
-        return $user->canManageRestaurant($table->restaurant);
+        return $user->isRestaurantAdmin() && $user->canManageRestaurant($table->restaurant);
     }
 
     /**
@@ -44,7 +44,7 @@ class TablePolicy
      */
     public function delete(User $user, Table $table): bool
     {
-        return $user->canManageRestaurant($table->restaurant);
+        return $user->isRestaurantAdmin() && $user->canManageRestaurant($table->restaurant);
     }
 
     /**
