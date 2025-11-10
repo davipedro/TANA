@@ -83,13 +83,6 @@ const isRoot = computed(() => user.value?.role === 'root');
                             >
                                 Ver Detalhes
                             </Link>
-                            <Link
-                                v-if="isRoot"
-                                :href="`/restaurants/${restaurant.slug}/edit`"
-                                class="inline-flex items-center justify-center rounded-md border border-input bg-background px-3 py-2 text-sm font-medium hover:bg-accent"
-                            >
-                                Editar
-                            </Link>
                         </div>
                     </div>
                 </div>

@@ -11,7 +11,7 @@ const tables = computed(() => page.props.tables as any[]);
 const user = computed(() => page.props.auth?.user as any);
 const canManage = computed(() => {
     if (!user.value) return false;
-    return user.value.role === 'root' || user.value.role === 'restaurant_admin';
+    return user.value.role === 'restaurant_admin';
 });
 
 const breadcrumbs = computed<BreadcrumbItem[]>(() => [
