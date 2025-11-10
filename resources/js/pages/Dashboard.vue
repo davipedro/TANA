@@ -2,8 +2,8 @@
 import AppLayout from '@/layouts/AppLayout.vue';
 import { dashboard } from '@/routes';
 import { type BreadcrumbItem } from '@/types';
-import { Head } from '@inertiajs/vue3';
-import PlaceholderPattern from '../components/PlaceholderPattern.vue';
+import { Head, usePage } from '@inertiajs/vue3';
+import { computed } from 'vue';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -11,36 +11,178 @@ const breadcrumbs: BreadcrumbItem[] = [
         href: dashboard().url,
     },
 ];
+
+const page = usePage();
+const stats = computed(() => page.props.stats as any);
+const user = computed(() => page.props.auth?.user as any);
+const isRoot = computed(() => user.value?.role === 'root');
+const isRestaurantAdmin = computed(() => user.value?.role === 'restaurant_admin');
+const isCustomer = computed(() => user.value?.role === 'customer');
 </script>
 
 <template>
     <Head title="Dashboard" />
 
     <AppLayout :breadcrumbs="breadcrumbs">
-        <div
-            class="flex h-full flex-1 flex-col gap-4 overflow-x-auto rounded-xl p-4"
-        >
-            <div class="grid auto-rows-min gap-4 md:grid-cols-3">
-                <div
-                    class="relative aspect-video overflow-hidden rounded-xl border border-sidebar-border/70 dark:border-sidebar-border"
-                >
-                    <PlaceholderPattern />
+        <div class="flex h-full flex-1 flex-col gap-6 p-6">
+            <div>
+                <h1 class="text-3xl font-bold tracking-tight">
+                    Bem-vindo, {{ user?.name }}!
+                </h1>
+                <p class="text-muted-foreground">
+                    {{ isRoot ? 'Painel Administrativo' : isRestaurantAdmin ? 'Painel do Restaurante' : 'Suas Reservas' }}
+                </p>
+            </div>
+
+            <!-- Stats Cards - Root -->
+            <div v-if="isRoot" class="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+                <div class="rounded-lg border bg-card p-6">
+                    <div class="flex flex-row items-center justify-between space-y-0 pb-2">
+                        <p class="text-sm font-medium text-muted-foreground">
+                            Restaurantes
+                        </p>
+                    </div>
+                    <div>
+                        <div class="text-2xl font-bold">{{ stats?.restaurants || 0 }}</div>
+                    </div>
                 </div>
-                <div
-                    class="relative aspect-video overflow-hidden rounded-xl border border-sidebar-border/70 dark:border-sidebar-border"
-                >
-                    <PlaceholderPattern />
+
+                <div class="rounded-lg border bg-card p-6">
+                    <div class="flex flex-row items-center justify-between space-y-0 pb-2">
+                        <p class="text-sm font-medium text-muted-foreground">
+                            Mesas
+                        </p>
+                    </div>
+                    <div>
+                        <div class="text-2xl font-bold">{{ stats?.tables || 0 }}</div>
+                    </div>
                 </div>
-                <div
-                    class="relative aspect-video overflow-hidden rounded-xl border border-sidebar-border/70 dark:border-sidebar-border"
-                >
-                    <PlaceholderPattern />
+
+                <div class="rounded-lg border bg-card p-6">
+                    <div class="flex flex-row items-center justify-between space-y-0 pb-2">
+                        <p class="text-sm font-medium text-muted-foreground">
+                            Total de Reservas
+                        </p>
+                    </div>
+                    <div>
+                        <div class="text-2xl font-bold">{{ stats?.reservations || 0 }}</div>
+                    </div>
+                </div>
+
+                <div class="rounded-lg border bg-card p-6">
+                    <div class="flex flex-row items-center justify-between space-y-0 pb-2">
+                        <p class="text-sm font-medium text-muted-foreground">
+                            Pendentes
+                        </p>
+                    </div>
+                    <div>
+                        <div class="text-2xl font-bold text-yellow-600">
+                            {{ stats?.pending_reservations || 0 }}
+                        </div>
+                    </div>
                 </div>
             </div>
-            <div
-                class="relative min-h-[100vh] flex-1 rounded-xl border border-sidebar-border/70 md:min-h-min dark:border-sidebar-border"
-            >
-                <PlaceholderPattern />
+
+            <!-- Stats Cards - Restaurant Admin -->
+            <div v-else-if="isRestaurantAdmin" class="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+                <div class="rounded-lg border bg-card p-6">
+                    <div class="flex flex-row items-center justify-between space-y-0 pb-2">
+                        <p class="text-sm font-medium text-muted-foreground">
+                            Meus Restaurantes
+                        </p>
+                    </div>
+                    <div>
+                        <div class="text-2xl font-bold">{{ stats?.restaurants || 0 }}</div>
+                    </div>
+                </div>
+
+                <div class="rounded-lg border bg-card p-6">
+                    <div class="flex flex-row items-center justify-between space-y-0 pb-2">
+                        <p class="text-sm font-medium text-muted-foreground">
+                            Mesas
+                        </p>
+                    </div>
+                    <div>
+                        <div class="text-2xl font-bold">{{ stats?.tables || 0 }}</div>
+                    </div>
+                </div>
+
+                <div class="rounded-lg border bg-card p-6">
+                    <div class="flex flex-row items-center justify-between space-y-0 pb-2">
+                        <p class="text-sm font-medium text-muted-foreground">
+                            Total de Reservas
+                        </p>
+                    </div>
+                    <div>
+                        <div class="text-2xl font-bold">{{ stats?.reservations || 0 }}</div>
+                    </div>
+                </div>
+
+                <div class="rounded-lg border bg-card p-6">
+                    <div class="flex flex-row items-center justify-between space-y-0 pb-2">
+                        <p class="text-sm font-medium text-muted-foreground">
+                            Pendentes
+                        </p>
+                    </div>
+                    <div>
+                        <div class="text-2xl font-bold text-yellow-600">
+                            {{ stats?.pending_reservations || 0 }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Stats Cards - Customer -->
+            <div v-else class="grid gap-4 md:grid-cols-2">
+                <div class="rounded-lg border bg-card p-6">
+                    <div class="flex flex-row items-center justify-between space-y-0 pb-2">
+                        <p class="text-sm font-medium text-muted-foreground">
+                            Minhas Reservas
+                        </p>
+                    </div>
+                    <div>
+                        <div class="text-2xl font-bold">{{ stats?.reservations || 0 }}</div>
+                    </div>
+                </div>
+
+                <div class="rounded-lg border bg-card p-6">
+                    <div class="flex flex-row items-center justify-between space-y-0 pb-2">
+                        <p class="text-sm font-medium text-muted-foreground">
+                            Próximas Reservas
+                        </p>
+                    </div>
+                    <div>
+                        <div class="text-2xl font-bold text-green-600">
+                            {{ stats?.upcoming_reservations || 0 }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Actions -->
+            <div class="rounded-lg border bg-card p-6">
+                <h2 class="text-xl font-semibold mb-4">Ações Rápidas</h2>
+                <div class="flex flex-wrap gap-4">
+                    <a
+                        href="/restaurants"
+                        class="inline-flex items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90"
+                    >
+                        Ver Restaurantes
+                    </a>
+                    <a
+                        v-if="isRoot"
+                        href="/restaurants/create"
+                        class="inline-flex items-center justify-center rounded-md border border-input bg-background px-4 py-2 text-sm font-medium hover:bg-accent hover:text-accent-foreground"
+                    >
+                        Novo Restaurante
+                    </a>
+                    <a
+                        href="/reservations"
+                        class="inline-flex items-center justify-center rounded-md border border-input bg-background px-4 py-2 text-sm font-medium hover:bg-accent hover:text-accent-foreground"
+                    >
+                        {{ isRoot ? 'Todas as Reservas' : isRestaurantAdmin ? 'Todas as Reservas' : 'Minhas Reservas' }}
+                    </a>
+                </div>
             </div>
         </div>
     </AppLayout>
