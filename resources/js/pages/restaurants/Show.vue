@@ -8,6 +8,8 @@ const page = usePage();
 const restaurant = computed(() => page.props.restaurant as any);
 const user = computed(() => page.props.auth?.user as any);
 const isRoot = computed(() => user.value?.role === 'root');
+const isRestaurantAdmin = computed(() => user.value?.role === 'restaurant_admin');
+const canManage = computed(() => isRestaurantAdmin.value);
 
 const breadcrumbs = computed<BreadcrumbItem[]>(() => [
     { title: 'Restaurantes', href: '/restaurants' },
@@ -32,14 +34,14 @@ const breadcrumbs = computed<BreadcrumbItem[]>(() => [
                 </div>
                 <div class="flex gap-2">
                     <Link
-                        v-if="isRoot"
+                        v-if="canManage"
                         :href="`/restaurants/${restaurant?.slug}/edit`"
                         class="inline-flex items-center justify-center rounded-md border border-input bg-background px-4 py-2 text-sm font-medium hover:bg-accent"
                     >
                         Editar
                     </Link>
                     <Link
-                        v-if="isRoot"
+                        v-if="canManage"
                         :href="`/restaurants/${restaurant?.slug}/tables`"
                         class="inline-flex items-center justify-center rounded-md border border-input bg-background px-4 py-2 text-sm font-medium hover:bg-accent"
                     >

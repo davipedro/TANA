@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import AppLayout from '@/layouts/AppLayout.vue';
-import { Button } from '@/components/ui/button';
 import { type BreadcrumbItem } from '@/types';
 import { Head, Link, usePage } from '@inertiajs/vue3';
 import { computed } from 'vue';
@@ -10,7 +9,7 @@ const restaurant = computed(() => page.props.restaurant as any);
 const user = computed(() => page.props.auth?.user as any);
 const canEdit = computed(() => {
     if (!user.value) return false;
-    return user.value.role === 'root' || user.value.role === 'restaurant_admin';
+    return user.value.role === 'restaurant_admin';
 });
 
 const breadcrumbs = computed<BreadcrumbItem[]>(() => [
