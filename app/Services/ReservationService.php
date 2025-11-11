@@ -7,6 +7,7 @@ use App\Models\Reservation;
 use App\Models\Restaurant;
 use App\Models\User;
 use App\Repositories\ReservationRepository;
+use Illuminate\Pagination\LengthAwarePaginator;
 
 class ReservationService
 {
@@ -55,7 +56,7 @@ class ReservationService
         ]);
     }
 
-    public function getReservationsForUser(User $user): array
+    public function getReservationsForUser(User $user): LengthAwarePaginator
     {
         $query = $this->reservationRepository->getLatestReservations();
 

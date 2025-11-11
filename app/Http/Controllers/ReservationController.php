@@ -74,7 +74,7 @@ class ReservationController extends Controller
         $reservation->load(['restaurant', 'table', 'user']);
 
         return Inertia::render('reservations/Show', [
-            'reservation' => new ReservationResource($reservation),
+            'reservation' => $reservation,
         ]);
     }
 

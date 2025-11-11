@@ -36,9 +36,9 @@ class ReservationResource extends JsonResource
             'can_be_cancelled' => $this->canBeCancelled(),
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
-            'restaurant' => $this->whenLoaded('restaurant'),
-            'user' => $this->whenLoaded('user'),
-            'table' => $this->whenLoaded('table'),
+            'restaurant' => $this->when($this->relationLoaded('restaurant'), fn() => $this->restaurant?->toArray()),
+            'user' => $this->when($this->relationLoaded('user'), fn() => $this->user?->toArray()),
+            'table' => $this->when($this->relationLoaded('table'), fn() => $this->table?->toArray()),
         ];
     }
 }
