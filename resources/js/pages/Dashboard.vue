@@ -2,7 +2,7 @@
 import AppLayout from '@/layouts/AppLayout.vue';
 import { dashboard } from '@/routes';
 import { type BreadcrumbItem } from '@/types';
-import { Head, usePage } from '@inertiajs/vue3';
+import { Head, Link, usePage } from '@inertiajs/vue3';
 import { computed } from 'vue';
 
 const breadcrumbs: BreadcrumbItem[] = [
@@ -169,19 +169,19 @@ const isCustomer = computed(() => user.value?.role === 'customer');
                     >
                         Ver Restaurantes
                     </a>
-                    <a
+                    <Link
                         v-if="isRoot"
                         href="/restaurants/create"
                         class="inline-flex items-center justify-center rounded-md border border-input bg-background px-4 py-2 text-sm font-medium hover:bg-accent hover:text-accent-foreground"
                     >
                         Novo Restaurante
-                    </a>
-                    <a
+                    </Link>
+                    <Link
                         href="/reservations"
                         class="inline-flex items-center justify-center rounded-md border border-input bg-background px-4 py-2 text-sm font-medium hover:bg-accent hover:text-accent-foreground"
                     >
                         {{ isRoot ? 'Todas as Reservas' : isRestaurantAdmin ? 'Todas as Reservas' : 'Minhas Reservas' }}
-                    </a>
+                    </Link>
                 </div>
             </div>
         </div>

@@ -51,12 +51,6 @@ function getStatusBadge(status: string) {
                         Gerencie suas reservas
                     </p>
                 </div>
-                <Link
-                    href="/restaurants"
-                    class="inline-flex items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90"
-                >
-                    Fazer Nova Reserva
-                </Link>
             </div>
 
             <div v-if="reservations?.data && reservations.data.length > 0" class="rounded-lg border">
