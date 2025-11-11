@@ -2,17 +2,17 @@
 
 namespace App\Services;
 
+use App\Contracts\Repositories\ReservationRepositoryInterface;
+use App\Contracts\Repositories\RestaurantRepositoryInterface;
+use App\Contracts\Repositories\TableRepositoryInterface;
 use App\Models\User;
-use App\Repositories\ReservationRepository;
-use App\Repositories\RestaurantRepository;
-use App\Repositories\TableRepository;
 
 class DashboardService
 {
     public function __construct(
-      protected ReservationRepository $reservationRepository,
-      protected RestaurantRepository $restaurantRepository,
-      protected TableRepository $tableRepository
+        protected ReservationRepositoryInterface $reservationRepository,
+        protected RestaurantRepositoryInterface $restaurantRepository,
+        protected TableRepositoryInterface $tableRepository
     ) {}
 
     public function getStatsForUser(User $user): array
@@ -20,27 +20,23 @@ class DashboardService
 
         if ($user?->isRoot()) {
             $stats = [
-                'restaurants' => RestaurantRepository::count(),
-                'tables' => TableRepository::count(),
-                'reservations' => ReservationRepository::count(),
+                'restaurants' => $this->restaurantRepository->count(),
+                'tables' => $this->tableRepository->count(),
+                'reservations' => $this->reservationRepository->count(),
                 'pending_reservations' => $this->reservationRepository->pendingReservations(),
             ];
         } elseif ($user?->isRestaurantAdmin()) {
-            $restaurantIds = $user->restaurants()->pluck('restaurants.id');
+            $restaurantIds = $user->restaurants()->pluck('restaurants.id')->toArray();
             $stats = [
                 'restaurants' => $user->restaurants()->count(),
-                'tables' => TableRepository::whereIn('restaurant_id', $restaurantIds)->count(),
-                'reservations' => ReservationRepository::whereIn('restaurant_id', $restaurantIds)->count(),
-                'pending_reservations' => ReservationRepository::whereIn('restaurant_id', $restaurantIds)
-                    ->where('status', 'pending')->count(),
+                'tables' => $this->tableRepository->countByRestaurants($restaurantIds),
+                'reservations' => $this->reservationRepository->countByRestaurants($restaurantIds),
+                'pending_reservations' => $this->reservationRepository->countPendingByRestaurants($restaurantIds),
             ];
         } else {
             $stats = [
-                'reservations' => ReservationRepository::where('user_id', $user->id)->count(),
-                'upcoming_reservations' => ReservationRepository::where('user_id', $user->id)
-                    ->where('reservation_datetime', '>', now())
-                    ->whereIn('status', ['pending', 'confirmed'])
-                    ->count(),
+                'reservations' => $this->reservationRepository->countByUser($user->id),
+                'upcoming_reservations' => $this->reservationRepository->countUpcomingByUser($user->id),
             ];
         }
 
