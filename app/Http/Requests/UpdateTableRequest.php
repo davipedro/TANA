@@ -11,7 +11,9 @@ class UpdateTableRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return $this->user()?->isRoot() ?? false;
+        $table = $this->route('table');
+
+        return $table && $this->user()?->can('update', $table);
     }
 
     /**
@@ -22,7 +24,6 @@ class UpdateTableRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'restaurant_id' => ['required', 'exists:restaurants,id'],
             'number' => ['required', 'string', 'max:50'],
             'capacity' => ['required', 'integer', 'min:1', 'max:50'],
             'type' => ['required', 'string', 'in:internal,external,vip,window'],

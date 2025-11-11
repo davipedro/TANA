@@ -21,12 +21,14 @@ class StoreReservationRequest extends FormRequest
      */
     public function rules(): array
     {
+        $isAuthenticated = $this->user() !== null;
+
         return [
             'restaurant_id' => ['required', 'exists:restaurants,id'],
             'table_id' => ['nullable', 'exists:tables,id'],
-            'guest_name' => ['required_without:user_id', 'string', 'max:255'],
-            'guest_email' => ['required_without:user_id', 'email', 'max:255'],
-            'guest_phone' => ['required_without:user_id', 'string', 'max:20'],
+            'guest_name' => [$isAuthenticated ? 'nullable' : 'required', 'string', 'max:255'],
+            'guest_email' => [$isAuthenticated ? 'nullable' : 'required', 'email', 'max:255'],
+            'guest_phone' => [$isAuthenticated ? 'nullable' : 'required', 'string', 'max:20'],
             'reservation_datetime' => ['required', 'date', 'after:now'],
             'party_size' => ['required', 'integer', 'min:1'],
             'duration' => ['nullable', 'integer', 'min:30', 'max:300'],
@@ -43,9 +45,9 @@ class StoreReservationRequest extends FormRequest
     {
         return [
             'reservation_datetime.after' => 'A data da reserva deve ser futura.',
-            'guest_name.required_without' => 'O nome é obrigatório para reservas sem cadastro.',
-            'guest_email.required_without' => 'O email é obrigatório para reservas sem cadastro.',
-            'guest_phone.required_without' => 'O telefone é obrigatório para reservas sem cadastro.',
+            'guest_name.required' => 'O nome é obrigatório para reservas sem cadastro.',
+            'guest_email.required' => 'O email é obrigatório para reservas sem cadastro.',
+            'guest_phone.required' => 'O telefone é obrigatório para reservas sem cadastro.',
         ];
     }
 }

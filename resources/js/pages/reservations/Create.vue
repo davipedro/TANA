@@ -133,20 +133,15 @@ function getMaxDateTime() {
                     </div>
 
                     <div v-if="restaurant?.tables && restaurant.tables.length > 0" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 mt-6">
-                        <label
+                        <div
                             v-for="table in restaurant.tables"
                             :key="table.id"
                             class="group relative flex flex-col items-center justify-center rounded-xl border-2 p-6 cursor-pointer transition-all hover:scale-105 hover:shadow-md"
                             :class="form.table_id === table.id
                                 ? 'border-primary bg-primary/10 shadow-lg ring-2 ring-primary/20'
                                 : 'border-border bg-card hover:border-primary/50'"
+                            @click="form.table_id === table.id ? form.table_id = null : form.table_id = table.id"
                         >
-                            <input
-                                type="radio"
-                                v-model="form.table_id"
-                                :value="table.id"
-                                class="sr-only"
-                            />
 
                             <!-- Checkmark quando selecionado -->
                             <div v-if="form.table_id === table.id" class="absolute top-2 right-2 w-5 h-5 bg-primary rounded-full flex items-center justify-center">
@@ -167,7 +162,7 @@ function getMaxDateTime() {
                             <div class="text-xs px-2 py-1 rounded-full bg-muted text-muted-foreground">
                                 {{ table.type === 'internal' ? 'Interna' : table.type === 'external' ? 'Externa' : table.type === 'window' ? 'Janela' : 'VIP' }}
                             </div>
-                        </label>
+                        </div>
                     </div>
 
                     <div class="mt-4 p-3 rounded-lg bg-muted/50">
