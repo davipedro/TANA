@@ -8,6 +8,18 @@ use App\Models\User;
 class RestaurantPolicy
 {
     /**
+     * Perform pre-authorization checks.
+     */
+    public function before(User $user, string $ability): ?bool
+    {
+        if ($user->isRoot()) {
+            return true;
+        }
+
+        return null;
+    }
+
+    /**
      * Determine whether the user can view any models.
      */
     public function viewAny(?User $user): bool
@@ -36,7 +48,7 @@ class RestaurantPolicy
      */
     public function update(User $user, Restaurant $restaurant): bool
     {
-        return $user->isRestaurantAdmin() && $user->canManageRestaurant($restaurant);
+        return $user->canManageRestaurant($restaurant);
     }
 
     /**
