@@ -105,7 +105,7 @@ class User extends Authenticatable
         }
 
         if ($this->isRestaurantAdmin()) {
-            return $this->restaurants()->where('restaurants.id', $restaurant->id)->exists();
+            return $this->restaurants()->where('restaurant_admin.restaurant_id', $restaurant->id)->exists();
         }
 
         return false;

@@ -9,16 +9,12 @@ use App\Http\Controllers\WelcomeController;
 // Rotas públicas
 Route::get('/', WelcomeController::class)->name('home');
 Route::get('/restaurants', [RestaurantController::class, 'index'])->name('restaurants.index');
-Route::get('/restaurants/{restaurant:slug}', [RestaurantController::class, 'show'])->name('restaurants.show');
-Route::get('/restaurants/{restaurant:slug}/policies', [RestaurantController::class, 'policies'])->name('restaurants.policies');
-Route::get('/restaurants/{restaurant:slug}/reserve', [ReservationController::class, 'create'])->name('reservations.create');
 Route::post('/reservations', [ReservationController::class, 'store'])->name('reservations.store');
 
 // Rotas autenticadas
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('dashboard', DashboardController::class)->name('dashboard');
 
-    // Restaurantes
     Route::get('/restaurants/create', [RestaurantController::class, 'create'])->name('restaurants.create');
     Route::post('/restaurants', [RestaurantController::class, 'store'])->name('restaurants.store');
     Route::get('/restaurants/{restaurant:slug}/edit', [RestaurantController::class, 'edit'])->name('restaurants.edit');
@@ -41,5 +37,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('/reservations/{reservation}/cancel', [ReservationController::class, 'cancel'])->name('reservations.cancel');
     Route::post('/reservations/{reservation}/status', [ReservationController::class, 'updateStatus'])->name('reservations.updateStatus');
 });
+
+Route::get('/restaurants/{restaurant:slug}', [RestaurantController::class, 'show'])->name('restaurants.show');
+Route::get('/restaurants/{restaurant:slug}/policies', [RestaurantController::class, 'policies'])->name('restaurants.policies');
+Route::get('/restaurants/{restaurant:slug}/reserve', [ReservationController::class, 'create'])->name('reservations.create');
 
 require __DIR__.'/settings.php';
