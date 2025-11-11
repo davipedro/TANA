@@ -13,7 +13,7 @@ class ReservationRepository implements ReservationRepositoryInterface
         private Reservation $model
     ) {}
 
-    public function pendingReservations()
+    public function pendingReservations(): int
     {
         return $this->model->where('status', 'pending')->count();
     }
@@ -61,9 +61,36 @@ class ReservationRepository implements ReservationRepositoryInterface
         return $reservation->update($data);
     }
 
-    public function count()
+    public function count(): int
     {
         return $this->model->count();
+    }
+
+    public function countByRestaurants(array $restaurantIds): int
+    {
+        return $this->model->whereIn('restaurant_id', $restaurantIds)->count();
+    }
+
+    public function countPendingByRestaurants(array $restaurantIds): int
+    {
+        return $this->model
+            ->whereIn('restaurant_id', $restaurantIds)
+            ->where('status', 'pending')
+            ->count();
+    }
+
+    public function countByUser(int $userId): int
+    {
+        return $this->model->where('user_id', $userId)->count();
+    }
+
+    public function countUpcomingByUser(int $userId): int
+    {
+        return $this->model
+            ->where('user_id', $userId)
+            ->where('reservation_datetime', '>', now())
+            ->whereIn('status', ['pending', 'confirmed'])
+            ->count();
     }
 
     public function getReservationsForUser(mixed $user)

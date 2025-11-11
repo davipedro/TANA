@@ -61,7 +61,7 @@ class RestaurantRepository implements RestaurantRepositoryInterface
         return $restaurant->delete();
     }
 
-    public function count()
+    public function count(): int
     {
         return $this->restaurant->count();
     }
