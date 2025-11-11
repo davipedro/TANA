@@ -23,7 +23,7 @@ const breadcrumbs = computed<BreadcrumbItem[]>(() => [
     <Head :title="`Políticas de Reserva - ${restaurant?.name}`" />
 
     <AppLayout :breadcrumbs="breadcrumbs">
-        <div class="flex h-full flex-1 flex-col gap-6 p-6 max-w-4xl mx-auto">
+        <div class="flex h-full flex-1 flex-col gap-6 p-6">
             <!-- Header -->
             <div>
                 <h1 class="text-3xl font-bold tracking-tight">

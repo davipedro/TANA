@@ -63,7 +63,7 @@ function submit() {
     <Head :title="`Editar ${restaurant?.name}`" />
 
     <AppLayout :breadcrumbs="breadcrumbs">
-        <div class="flex h-full flex-1 flex-col gap-6 p-6 max-w-4xl mx-auto">
+        <div class="flex h-full flex-1 flex-col gap-6 p-6">
             <div>
                 <h1 class="text-3xl font-bold tracking-tight">Editar Restaurante</h1>
                 <p class="text-muted-foreground">{{ restaurant?.name }}</p>

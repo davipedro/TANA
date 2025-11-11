@@ -55,7 +55,7 @@ function getMaxDateTime() {
     <Head title="Nova Reserva" />
 
     <AppLayout :breadcrumbs="breadcrumbs">
-        <div class="flex h-full flex-1 flex-col gap-8 p-6 max-w-5xl mx-auto">
+        <div class="flex h-full flex-1 flex-col gap-6 p-6">
             <!-- Header -->
             <div class="text-center space-y-2">
                 <h1 class="text-4xl font-bold tracking-tight">
