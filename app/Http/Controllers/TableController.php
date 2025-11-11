@@ -6,6 +6,7 @@ use App\Http\Requests\StoreTableRequest;
 use App\Http\Requests\UpdateTableRequest;
 use App\Models\Restaurant;
 use App\Models\Table;
+use App\Services\TableService;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\RedirectResponse;
 use Inertia\Inertia;
@@ -15,15 +16,16 @@ class TableController extends Controller
 {
     use AuthorizesRequests;
 
+    public function __construct(
+        private TableService $tableService
+    ) {}
+
     /**
      * Display a listing of the resource.
      */
     public function index(Restaurant $restaurant): Response
     {
-        $tables = $restaurant->tables()
-            ->withCount('reservations')
-            ->orderBy('number')
-            ->get();
+        $tables = $this->tableService->getTablesForRestaurant($restaurant);
 
         return Inertia::render('tables/Index', [
             'restaurant' => $restaurant,
@@ -48,7 +50,7 @@ class TableController extends Controller
      */
     public function store(StoreTableRequest $request, Restaurant $restaurant): RedirectResponse
     {
-        $table = $restaurant->tables()->create($request->validated());
+        $table = $this->tableService->createTable($restaurant, $request->validated());
 
         return redirect()->route('restaurants.tables.index', $restaurant)
             ->with('success', 'Mesa criada com sucesso!');
@@ -72,7 +74,7 @@ class TableController extends Controller
      */
     public function update(UpdateTableRequest $request, Restaurant $restaurant, Table $table): RedirectResponse
     {
-        $table->update($request->validated());
+        $this->tableService->updateTable($table, $request->validated());
 
         return redirect()->route('restaurants.tables.index', $restaurant)
             ->with('success', 'Mesa atualizada com sucesso!');
@@ -85,7 +87,7 @@ class TableController extends Controller
     {
         $this->authorize('delete', $table);
 
-        $table->delete();
+        $this->tableService->deleteTable($table);
 
         return redirect()->route('restaurants.tables.index', $restaurant)
             ->with('success', 'Mesa excluída com sucesso!');

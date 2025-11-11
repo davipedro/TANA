@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreRestaurantRequest;
 use App\Http\Requests\UpdateRestaurantRequest;
 use App\Models\Restaurant;
+use App\Services\RestaurantService;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\RedirectResponse;
 use Inertia\Inertia;
@@ -14,21 +15,16 @@ class RestaurantController extends Controller
 {
     use AuthorizesRequests;
 
+    public function __construct(
+        private RestaurantService $restaurantService
+    ) {}
+
     /**
      * Display a listing of the resource.
      */
     public function index(): Response
     {
-        $query = Restaurant::withCount('tables', 'reservations');
-
-        // Restaurant admins only see their own restaurants
-        if (auth()->check() && auth()->user()->isRestaurantAdmin()) {
-            $query->whereHas('admins', function ($q) {
-                $q->where('users.id', auth()->id());
-            });
-        }
-
-        $restaurants = $query->latest()->get();
+        $restaurants = $this->restaurantService->getRestaurantWithCounts();
 
         return Inertia::render('restaurants/Index', [
             'restaurants' => $restaurants,
@@ -50,7 +46,7 @@ class RestaurantController extends Controller
      */
     public function store(StoreRestaurantRequest $request): RedirectResponse
     {
-        $restaurant = Restaurant::create($request->validated());
+        $restaurant = $this->restaurantService->createRestaurant($request->validated());
 
         return redirect()->route('restaurants.show', $restaurant)
             ->with('success', 'Restaurante criado com sucesso!');
