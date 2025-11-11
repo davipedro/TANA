@@ -163,12 +163,12 @@ const isCustomer = computed(() => user.value?.role === 'customer');
             <div class="rounded-lg border bg-card p-6">
                 <h2 class="text-xl font-semibold mb-4">Ações Rápidas</h2>
                 <div class="flex flex-wrap gap-4">
-                    <a
+                    <Link
                         href="/restaurants"
-                        class="inline-flex items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90"
+                        class="inline-flex items-center justify-center rounded-md border border-input bg-background px-4 py-2 text-sm font-medium hover:bg-accent hover:text-accent-foreground"
                     >
                         Ver Restaurantes
-                    </a>
+                    </Link>
                     <Link
                         v-if="isRoot"
                         href="/restaurants/create"

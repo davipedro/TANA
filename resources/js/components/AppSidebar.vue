@@ -13,17 +13,46 @@ import {
 } from '@/components/ui/sidebar';
 import { dashboard } from '@/routes';
 import { type NavItem } from '@/types';
-import { Link } from '@inertiajs/vue3';
-import { LayoutGrid } from 'lucide-vue-next';
+import { Link, usePage } from '@inertiajs/vue3';
+import { LayoutGrid, Store, Plus, Calendar } from 'lucide-vue-next';
+import { computed } from 'vue';
 import AppLogo from './AppLogo.vue';
 
-const mainNavItems: NavItem[] = [
-    {
-        title: 'Dashboard',
-        href: dashboard(),
-        icon: LayoutGrid,
-    },
-];
+const page = usePage();
+const user = computed(() => page.props.auth?.user as any);
+const isRoot = computed(() => user.value?.role === 'root');
+const isRestaurantAdmin = computed(() => user.value?.role === 'restaurant_admin');
+
+const mainNavItems = computed<NavItem[]>(() => {
+    const items: NavItem[] = [
+        {
+            title: 'Dashboard',
+            href: dashboard(),
+            icon: LayoutGrid,
+        },
+        {
+            title: 'Ver Restaurantes',
+            href: '/restaurants',
+            icon: Store,
+        },
+    ];
+
+    if (isRoot.value) {
+        items.push({
+            title: 'Novo Restaurante',
+            href: '/restaurants/create',
+            icon: Plus,
+        });
+    }
+
+    items.push({
+        title: isRoot.value ? 'Todas as Reservas' : isRestaurantAdmin.value ? 'Todas as Reservas' : 'Minhas Reservas',
+        href: '/reservations',
+        icon: Calendar,
+    });
+
+    return items;
+});
 
 const footerNavItems: NavItem[] = [];
 </script>
